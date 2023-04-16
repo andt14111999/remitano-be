@@ -1,4 +1,4 @@
-const jwt = reuiqre('jwtwebtoken')
+const jwt = require('jsonwebtoken');
 
 module.exports = (request, response, next) => {
     const token = request.header('Authorization')
@@ -6,7 +6,7 @@ module.exports = (request, response, next) => {
     if (!token) return response.status(401).send("Access Denied")
 
     try {
-        const cutToken = token.substring(8)
+        const cutToken = token.substring(7)
         const verified = jwt.verify(cutToken, process.env.TOKEN_SECRET)
         next();
     } catch (err) {

@@ -24,9 +24,13 @@ router.post('/register', async (request, response) => {
 
   try {
     const newUser = await user.save();
-    const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET, {
-      expiresIn: 60 * 60 * 24,
-    });
+    const token = jwt.sign(
+      { _id: user._id, email: request.body.email },
+      process.env.TOKEN_SECRET,
+      {
+        expiresIn: 60 * 60 * 24,
+      }
+    );
     response.header('Authorization', `Bearer ${token}`).send(token);
   } catch (err) {
     response.status(400).send(err);
@@ -46,7 +50,7 @@ router.post('/login', async (request, response) => {
   if (!checkPassword)
     return response.status(422).send('Email or Password is not correct');
 
-  const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET, {
+  const token = jwt.sign({ _id: user._id, email: request.body.email }, process.env.TOKEN_SECRET, {
     expiresIn: 60 * 60 * 24,
   });
   response.header('Authorization', `Bearer ${token}`).send(token);
